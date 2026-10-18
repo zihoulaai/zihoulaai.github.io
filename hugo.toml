@@ -82,8 +82,10 @@ keywords = "blog,技术,随笔"
 info = ["全栈开发", "终身学习"]
 
 # 主题用 relURL 直接输出图片地址，不走 Hugo 资源管线，
-# 因此文件必须放在 static/ 下（放 assets/ 不会被输出，会破图）
-avatarURL = "/img/avatar.svg"
+# 因此文件必须放在 static/ 下（放 assets/ 不会被输出，会破图）。
+# 头像取自 GitHub 个人主页（https://github.com/zihoulaai.png?size=460），
+# 主题自带 border-radius: 50% 会裁成圆形，不需要额外处理。
+avatarURL = "/img/avatar.png"
 faviconSVG = "/img/favicon.svg"
 
 dateFormat = "2006年1月2日"
