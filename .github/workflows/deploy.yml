@@ -45,8 +45,9 @@ jobs:
         # base_url 由 Actions 注入，无需在 hugo.toml 里写死
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
         env:
-          # 缓存目录与 .gitignore 中的 /resources/ 对应
-          HUGO_CACHEDIR: resources
+          # 不要设 HUGO_CACHEDIR：它映射到 Hugo 的 caches 配置，要求绝对路径，
+          # 相对路径会被拼成 resources/modules 并直接报错。runner 每次都是全新
+          # 环境，缓存本来也用不上，交给 Hugo 用默认位置即可
           TZ: Asia/Shanghai
 
       - name: Upload Pages artifact
