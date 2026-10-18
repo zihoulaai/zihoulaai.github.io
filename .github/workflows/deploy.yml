@@ -27,12 +27,15 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Setup Hugo
-        uses: actions/setup-hugo@v0
+      - name: Install Hugo
+        uses: peaceiris/actions-hugo@v3
         with:
           # 主题要求 Hugo >= 0.124.0，编译 SCSS 需要 extended 版本
           hugo-version: '0.168.0'
           extended: true
+          # 该 action 默认会缓存 Hugo 二进制，而上面把 permissions 收紧成了
+          # 显式列表，actions: write 实际为 none，缓存会因权限不足失败
+          cache-disable: true
 
       - name: Configure Pages
         id: pages
@@ -60,4 +63,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
