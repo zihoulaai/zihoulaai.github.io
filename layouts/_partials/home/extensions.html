@@ -1,0 +1,27 @@
+{{- /*
+  覆盖主题的 home/extensions.html。
+  hugo-coder 的首页默认只有个人简介，不列文章，这里补一个「最新文章」区块。
+  注意：extensions 位于 .container.centered（display:flex）内部，
+  所以这里不能再用 container/centered，否则会与简介区并排显示。
+*/ -}}
+{{- $posts := where .Site.RegularPages "Section" "posts" -}}
+{{- with $posts }}
+<section class="latest-posts">
+  <h2>最新文章</h2>
+  <div class="list">
+    <ul>
+      {{- range first 5 . }}
+      <li>
+        <span class="date">
+          <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "2006年1月2日" }}</time>
+        </span>
+        <a class="title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+      </li>
+      {{- end }}
+    </ul>
+  </div>
+  {{- if gt (len .) 5 }}
+  <p class="more"><a href="{{ "/posts/" | relURL }}">查看全部 {{ len . }} 篇文章 &rarr;</a></p>
+  {{- end }}
+</section>
+{{- end }}

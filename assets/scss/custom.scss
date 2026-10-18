@@ -1,0 +1,352 @@
+/* ============================================================
+ * 站点样式定制（主题：hugo-coder）
+ *
+ * 加载顺序：coder.css → coder-dark.css → 本文件，
+ * 因此这里的规则可以直接覆盖主题样式。
+ *
+ * 注意：主题的暗色样式写在 body.colorscheme-dark /
+ * body.colorscheme-auto 下，特异性高于裸 body，
+ * 所以暗色定制必须用同样的选择器才能生效。
+ * ============================================================ */
+
+/* ---------- 中文字体（本地子集） ----------
+   源字体为 Noto Sans SC 可变字体（OFL 许可，可自由分发），
+   经 tools/subset-font.py 按「站点实际用字 + GB2312 6763 常用汉字」子集化：
+   16.9MB 压缩到 1.8MB，一个文件覆盖 100–900 全部字重，无需分字重加载。
+   增删文章后重新运行脚本更新字集，否则新出现的字会回退到系统字体。 */
+@font-face {
+    font-family: "Noto Sans SC";
+    src: url("/fonts/noto-sans-sc-subset.woff2") format("woff2");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------- 设计令牌 ---------- */
+:root {
+    --coder-font: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --coder-brand: #4f46e5;
+    --coder-brand-darker: #4338ca;
+
+    --coder-bg: #f7f8fc;
+    --coder-fg: #2b3240;
+    --coder-heading: #16181d;
+    --coder-alt-bg: #e8eaf2;
+    --coder-muted: #6b7280;
+    --coder-border: rgba(17, 24, 39, 0.09);
+
+    --coder-code-fg: #c2255c;
+    --coder-code-bg: rgba(79, 70, 229, 0.08);
+}
+
+body.colorscheme-dark {
+    --coder-brand: #818cf8;
+    --coder-brand-darker: #a5b4fc;
+
+    --coder-bg: #15171c;
+    --coder-fg: #d7dae0;
+    --coder-heading: #f2f3f5;
+    --coder-alt-bg: #262a33;
+    --coder-muted: rgba(255, 255, 255, 0.6);
+    --coder-border: rgba(255, 255, 255, 0.12);
+
+    --coder-code-fg: #ff8fab;
+    --coder-code-bg: rgba(129, 140, 248, 0.14);
+}
+
+body.colorscheme-auto {
+    @media (prefers-color-scheme: dark) {
+        --coder-brand: #818cf8;
+        --coder-brand-darker: #a5b4fc;
+
+        --coder-bg: #15171c;
+        --coder-fg: #d7dae0;
+        --coder-heading: #f2f3f5;
+        --coder-alt-bg: #262a33;
+        --coder-muted: rgba(255, 255, 255, 0.6);
+        --coder-border: rgba(255, 255, 255, 0.12);
+
+        --coder-code-fg: #ff8fab;
+        --coder-code-bg: rgba(129, 140, 248, 0.14);
+    }
+}
+
+/* ---------- 基础 ---------- */
+
+/* 主题把 $font-family 硬编码在 body / 标题 / 导航多处，
+   逐一覆盖才能让 Web 字体在所有层级生效 */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navigation a,
+.navigation span,
+.navigation-title {
+    font-family: var(--coder-font);
+}
+
+body {
+    background-color: var(--coder-bg);
+    color: var(--coder-fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    color: var(--coder-brand);
+
+    &:hover {
+        color: var(--coder-brand-darker);
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--coder-heading);
+}
+
+/* ---------- 导航 ---------- */
+
+/* 主题给站点标题设了 letter-spacing: 0.1rem 并做 uppercase，是按西文设计的。
+   中文没有大小写之分，0.1rem 的字距却会把汉字明显撑开。
+   注意选择器要写成 .navigation .navigation-title：主题那条规则带父级，
+   写成裸类选择器特异性不够，会被反向覆盖 */
+.navigation .navigation-title {
+    letter-spacing: normal;
+    /* 主题默认 uppercase 会把「Theo's Blog」压成 THEO'S BLOG，
+       中文站里中英混排的标题不需要强制大写 */
+    text-transform: none;
+}
+
+header nav {
+    a {
+        color: var(--coder-fg);
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: var(--coder-brand);
+            text-decoration: none;
+        }
+    }
+}
+
+/* ---------- 头像 ---------- */
+.avatar img {
+    border: 1px solid var(--coder-border);
+}
+
+/* ---------- 首页 ---------- */
+.centered .about {
+    .info {
+        color: var(--coder-muted);
+    }
+
+    ul li a {
+        color: var(--coder-fg);
+        /* 中文标签不加字距，否则汉字间隙会被明显撑开 */
+        letter-spacing: normal;
+
+        &:hover {
+            color: var(--coder-brand);
+        }
+    }
+}
+
+/* ---------- 首页最新文章（自定义扩展区块） ---------- */
+
+/* 主题的 .container.centered 是 display:flex（横排），
+   首页简介与扩展区块会并排显示，这里改为纵向堆叠 */
+.container.centered {
+    flex-direction: column;
+}
+
+.latest-posts {
+    width: 100%;
+    max-width: 76rem;
+    margin: 5.6rem auto 0;
+    text-align: center;
+
+    h2 {
+        margin-top: 0;
+        color: var(--coder-heading);
+    }
+
+    .list {
+        text-align: left;
+    }
+
+    .more {
+        margin-top: 2.4rem;
+    }
+}
+
+/* ---------- 文章 ---------- */
+.content {
+    .post {
+        /* 标题实际元素是 .post-title 内的 h1.title。
+           字重明确用 700：雅黑只有 300/400/700，600 在部分中文系统里
+           会被合成出笔画粗细不均的伪粗体 */
+        .post-title h1 {
+            font-weight: 700;
+            letter-spacing: normal;
+        }
+
+        .post-meta {
+            color: var(--coder-muted);
+
+            .tags .tag {
+                background-color: var(--coder-alt-bg);
+                border-radius: 6px;
+                transition: background-color 0.2s ease;
+
+                a {
+                    color: var(--coder-fg);
+                }
+
+                &:hover {
+                    background-color: var(--coder-brand);
+                }
+
+                &:hover a {
+                    color: #fff;
+                }
+            }
+        }
+
+        article {
+            /* 中文正文不加字距。0.01em（约 0.2px）是按西文调的，
+               叠加到汉字上会把每个字的间隙撑开，整体显得松散 */
+            p,
+            li {
+                letter-spacing: normal;
+            }
+
+            /* 中文正文两端对齐在窄屏容易出现怪异空隙，改为左对齐 */
+            p {
+                text-align: left;
+                hyphens: none;
+                margin: 1.6rem 0;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4 {
+                font-weight: 700;
+                letter-spacing: normal;
+            }
+
+            code {
+                background-color: var(--coder-code-bg);
+                color: var(--coder-code-fg);
+                padding: 0.15em 0.4em;
+                border-radius: 5px;
+            }
+
+            pre {
+                border-radius: 10px;
+            }
+
+            pre code {
+                background-color: transparent;
+                color: inherit;
+            }
+
+            blockquote {
+                border-left: 3px solid var(--coder-brand);
+                background-color: var(--coder-code-bg);
+                padding: 0.5rem 1.2rem;
+                border-radius: 0 8px 8px 0;
+            }
+
+            table {
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 1px solid var(--coder-border);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            th {
+                font-weight: 600;
+            }
+        }
+    }
+
+    .list {
+        ul li {
+            .title {
+                letter-spacing: normal;
+            }
+
+            .date {
+                color: var(--coder-muted);
+            }
+        }
+    }
+}
+
+/* ---------- 分类 / 标签页 ---------- */
+.taxonomy {
+    ul li a {
+        transition: color 0.2s ease;
+    }
+}
+
+/* ---------- 细节 ---------- */
+::selection {
+    background-color: rgba(79, 70, 229, 0.18);
+}
+
+body.colorscheme-dark ::selection {
+    background-color: rgba(129, 140, 248, 0.28);
+}
+
+body.colorscheme-auto ::selection {
+    @media (prefers-color-scheme: dark) {
+        background-color: rgba(129, 140, 248, 0.28);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(17, 24, 39, 0.2);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+
+    &:hover {
+        background-color: rgba(17, 24, 39, 0.32);
+    }
+}
+
+body.colorscheme-dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.32);
+    }
+}
+
+/* 尊重系统的“减少动态效果”设置 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

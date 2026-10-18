@@ -1,0 +1,135 @@
+# ============================================================
+#  站点配置（主题：hugo-coder）
+# ============================================================
+
+# ========== 站点基础配置 ==========
+# GitHub Pages 的 baseURL 分两种情况，取决于仓库名：
+#   1) 仓库名为 <用户名>.github.io（用户主页仓库）→ https://<用户名>.github.io/
+#   2) 仓库名为其他名字（例如 myblog）          → https://<用户名>.github.io/<仓库名>/
+# 仓库名为 zihoulaai.github.io（GitHub 用户主页仓库），所以 baseURL 即为该域名。
+# 若以后改成普通仓库名，需要在末尾补上仓库名，例如 https://zihoulaai.github.io/myblog/
+# 注意：baseURL 必须是合法 URL（Hugo 会解析并校验主机名），不能用 {{占位符}}。
+baseURL = "https://zihoulaai.github.io/"
+
+# Hugo v0.158 起 languageCode 已更名为 locale
+locale = "zh-CN"
+# 语言代码必须与主题 i18n 文件名一致，否则界面文案取不到翻译。
+# hugo-coder 的简体中文文件是 i18n/zh-cn.toml。
+defaultContentLanguage = "zh-cn"
+hasCJKLanguage = true   # 中文统计字数、阅读时间，必须开启
+
+theme = "hugo-coder"
+title = "Theo's Blog"
+# 注意：hugo-coder 的页脚不读顶层 copyright 字段，它由 params.since、
+# params.author 和 params.license 拼出来，所以这里不设 copyright。
+
+# 支持 :smile: 这类 emoji 短代码
+enableEmoji = true
+
+[pagination]
+  pagerSize = 6
+
+# ========== Markdown 渲染 ==========
+[markup]
+  [markup.highlight]
+    noClasses = false
+    lineNos = false
+  [markup.goldmark.renderer]
+    # 允许文章内嵌 HTML（表格、tab 等 shortcode 依赖）
+    unsafe = true
+
+# ========== 分类体系 ==========
+# series 用于「系列文章」，author 用于多作者站点
+[taxonomies]
+  category = "categories"
+  series = "series"
+  tag = "tags"
+  author = "authors"
+
+# ========== 菜单 ==========
+# 注意：hugo-coder 的首页是个人简介页，文章列表单独放在 /posts/
+[[menu.main]]
+name = "首页"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "文章"
+url = "/posts/"
+weight = 2
+
+[[menu.main]]
+name = "分类"
+url = "/categories/"
+weight = 3
+
+[[menu.main]]
+name = "标签"
+url = "/tags/"
+weight = 4
+
+[[menu.main]]
+name = "关于"
+url = "/about/"
+weight = 5
+
+# ========== 主题参数 ==========
+[params]
+author = "Theo"
+description = "记录学习与思考"
+keywords = "blog,技术,随笔"
+# 显示在头像下方的短标签
+info = ["全栈开发", "终身学习"]
+
+# 主题用 relURL 直接输出图片地址，不走 Hugo 资源管线，
+# 因此文件必须放在 static/ 下（放 assets/ 不会被输出，会破图）
+avatarURL = "/img/avatar.svg"
+faviconSVG = "/img/favicon.svg"
+
+dateFormat = "2006年1月2日"
+since = 2026
+
+# 配色："auto" 跟随系统 / "dark" / "light"
+colorScheme = "auto"
+hideColorSchemeToggle = false
+
+# 文章底部「相关阅读」最多显示几条
+maxSeeAlsoItems = 5
+
+# 自定义样式，路径相对于 assets/
+customSCSS = ["scss/custom.scss"]
+
+# 文章底部许可声明。
+# 主题页脚会自动在前面拼 i18n 的「许可依据」，所以这里只填协议名，
+# 写整句会变成「许可依据本文采用…许可」这种重复表述
+license = "CC BY-NC-SA 4.0"
+
+# ========== 社交链接 ==========
+[[params.social]]
+name = "GitHub"
+icon = "fa-brands fa-github fa-2x"
+weight = 1
+url = "https://github.com/zihoulaai"
+
+[[params.social]]
+name = "RSS"
+icon = "fa-solid fa-rss fa-2x"
+weight = 2
+url = "/index.xml"
+rel = "alternate"
+type = "application/rss+xml"
+
+# ========== 评论区（giscus） ==========
+# repo 留空时主题会自动跳过渲染，不会报错。
+# 开启步骤：
+#   1. 打开 https://giscus.app ，用 GitHub 登录并配置好 repo 与 Discussion 分类
+#   2. 下面 4 个占位符替换为该页给出的真实值
+[params.giscus]
+repo = ""
+repoID = "{{GISCUS_REPO_ID}}"
+category = "Announcements"
+categoryID = "{{GISCUS_CATEGORY_ID}}"
+mapping = "pathname"
+theme = "light"
+lang = "zh-CN"
+loading = "lazy"

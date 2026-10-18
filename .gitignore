@@ -1,0 +1,6 @@
+# Hugo 构建产物，不应提交到仓库
+/public/
+/resources/
+.hugo_build.lock
+
+# 主题通过 git submodule 管理（见 .gitmodules），不要忽略 themes/

@@ -1,0 +1,63 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# 部署需要 pages 写权限与 id-token（用于签发部署凭据）
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一次部署，避免并发发布互相覆盖
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # themes/hugo-coder 是 submodule，不初始化会导致构建找不到主题
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: actions/setup-hugo@v0
+        with:
+          # 主题要求 Hugo >= 0.124.0，编译 SCSS 需要 extended 版本
+          hugo-version: '0.168.0'
+          extended: true
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        # base_url 由 Actions 注入，无需在 hugo.toml 里写死
+        run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+        env:
+          # 缓存目录与 .gitignore 中的 /resources/ 对应
+          HUGO_CACHEDIR: resources
+          TZ: Asia/Shanghai
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
